@@ -32,7 +32,7 @@ bfcolor <- function(x, color) {
 :::callout
 **STUDENT NAME **
 
-- STUDENT 1    (NetID 1)
+- Kai Barker   (kaibarker)
 - STUDENT 2    (NetID 2)
 - STUDENT 3    (NetID 3)
 :::
@@ -62,6 +62,11 @@ bfcolor <- function(x, color) {
 :::
 
 
+```{r}
+library(readxl)
+library(ggplot2)
+library(dplyr)
+```
 
 
 \newpage
@@ -82,7 +87,9 @@ Based on your understanding of the collected data, propose three questions or hy
 
 `r bfcolor("ANSWERS TO QUESTION 1:", "red")` \
 
-_**Replace this line with your answers**_ \
+1. sleep vs stress
+2. gpa vs studying
+3. gym vs stress
 
 
 
@@ -95,7 +102,9 @@ Load the data into `R`, obtain basic descriptive statistics for the numerical va
 
 `r bfcolor("ANSWERS TO QUESTION 2:", "red")` \
 
-_**Replace this line with your answers**_ \
+```{r}
+study_data <- read_excel("Study.xlsx")
+```
 
 \newpage
 :::{.callout-important}
