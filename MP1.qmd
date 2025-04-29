@@ -84,11 +84,9 @@ These sections are interconnected - for example, physical measurements may relat
 Based on your understanding of the collected data, propose three questions or hypotheses that can be explored or tested using the data.
 :::
 
-`r bfcolor("ANSWERS TO QUESTION 1:", "red")`\
+`r bfcolor("ANSWERS TO QUESTION 1:", "red")`
 
-1.  sleep vs stress
-2.  gpa vs studying
-3.  gym vs stress
+From the collected data, there are many hypothesis that could be tested. Three that stood out were, is there a correlation between the hours of sleep that students get, and their level of stress? Is there a relationship between the number of hours a student spends studying and their GPA? Is there a relationship between the students stress level, and the amount of times they get exercise each week?
 
 \newpage
 
@@ -114,6 +112,14 @@ summary(survey_data$GPA)
 #talk about these
 ```
 
+We can see from the dataset that there is only three numerical variables. While many of the variables include numerical values, and value that can be categorized, such as the number of meals per day, does not count as a numerical variable. Further, students stress level was determined to not be a numerical variable as it was not continuous, and was limited to only ten options. Thus our numerical variables were Weight, Height, and GPA.
+
+We can observe that the Weight variable had a minimum value of 106 and a maximum value of 309, with a mean value of 159. A challenge with this data is that not all responses may be in the same units, or honest. With that in mind, our mean could be more affected by the maximum and minimum values.
+
+For the height variable...
+
+From the summary of students GPA, we can observe that there was a minimum GPA of 1.3, and a maximum GPA of 4.0, with a mean of 3.478 and 3 missing values. The missing values are likely due to students who did not want to report their GPA. Further, some students may not have been honest in their responses, skewing the data. However, the mean GPA value seems plausible in a real world context.
+
 \newpage
 
 ::: callout-important
@@ -135,6 +141,12 @@ d- Can you address any potential bias for this missing values?
 From the dataset, we can see that there are some missing values in the Alcohol, GPA, Health columns.
 
 **b)**
+
+**c)**
+
+To handle the missing values in the dataset, we can
+
+**d)**
 
 ```{r}
 
