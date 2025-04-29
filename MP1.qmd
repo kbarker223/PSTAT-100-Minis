@@ -34,7 +34,7 @@ bfcolor <- function(x, color) {
 **STUDENT NAMES**
 
 -   Kai Barker (kaibarker)
--   STUDENT 2 (NetID 2)
+-   Luke Drushell (drushell)
 -   STUDENT 3 (NetID 3)
 :::
 
