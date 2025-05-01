@@ -207,6 +207,55 @@ Create a visualization to show the distribution of Weight, comment!
 ::: callout-important
 # **Question 7**
 
+Starting by standardizing the height to inches:
+```{r}
+library(writexl)
+
+
+survey_data_revisions <- read_excel("Survey.xlsx")
+
+# Adjust the height column
+survey_data_revisions$Heigh <- sapply(survey_data_revisions$Heigh, function(h) {
+  if (h < 3) {
+    # they typed in meters
+    return(h * 39.3701)
+  } else if (h < 30) {
+    # ft.inches format (5.11 means 5 feet 11 inches)
+    
+    parts <- strsplit(as.character(h), "\\.")[[1]]
+    feet <- as.numeric(parts[1])
+    inches <- ifelse(length(parts) > 1, as.numeric(parts[2]), 0)
+    
+    # adjust if they had the audacity to put partial inches
+    if (inches >= 12) { inches <- inches/10 }
+    
+    
+    return(feet * 12 + inches)
+  } else if (h >= 30 && h < 100) {
+    # already in inches
+    return(h)
+  } else if (h >= 100 && h < 350) {
+    # they typed in centimeters
+    return(h * 0.393701)
+  } else {
+    # ftin format (511 means 5 feet 11 inches)
+    
+    h_str <- as.character(h)
+    feet <- as.numeric(substr(h_str, 1, 1))
+    inches <- as.numeric(substr(h_str, 2, nchar(h_str)))
+    
+    # adjust if they had the audacity to put partial inches
+    if (inches >= 12) { inches <- inches/10 }
+    
+    return(feet * 12 + inches)
+  }
+})
+
+write_xlsx(survey_data_revisions, "Survey_Height_Revised.xlsx")
+```
+
+
+
 a.  Define a new variable BMI = $\left(\frac{\text{Weight (lb)}}{\text{Height (in)}^2} \right) \times 703$, and classify students into BMI categories based on Centers for Disease Control and Prevention (CDC) guidelines:
 
 -   BMI \< 18.5 → `"Underweight"`\
