@@ -198,16 +198,35 @@ c- Use a boxplot to compare stress distributions across sleep categories and com
 Create a visualization to show the distribution of Weight, comment!
 :::
 
-`r bfcolor("ANSWERS TO QUESTION 6:", "red")`\
+```{r}
+ggplot(survey_data_revisions, aes(x = Weight)) +
+  geom_histogram(binwidth = 5, fill = "cyan", color = "orange") +
+  labs(title = "Distribution of Weight",
+       x = "Weight",
+       y = "Frequency")
+```
 
-***Replace this line with your answers***\
+While there is evidently one outlier, what is much more interesting is the dip found around 150, it seems a lot of people hang just below and just above that range, but very infrequently actually in that area. \
 
 \newpage
 
 ::: callout-important
 # **Question 7**
 
+a.  Define a new variable BMI = $\left(\frac{\text{Weight (lb)}}{\text{Height (in)}^2} \right) \times 703$, and classify students into BMI categories based on Centers for Disease Control and Prevention (CDC) guidelines:
+
+-   BMI \< 18.5 → `"Underweight"`\
+-   18.5 ≤ BMI \< 25 → `"Normal"`\
+-   25 ≤ BMI \< 30 → `"Overweight"`\
+-   BMI ≥ 30 → `"Obese"`
+
+b- Visualize and describe the distribution of students' BMI categories using a bar chart.
+
+c- Explore the correlations between **BMI**, **GPA**, and **Stress**. Use visualizations and correlation statistics to summarize the relationships.
+:::
+
 Starting by standardizing the height to inches:
+
 ```{r}
 library(writexl)
 
@@ -254,20 +273,46 @@ survey_data_revisions$Heigh <- sapply(survey_data_revisions$Heigh, function(h) {
 write_xlsx(survey_data_revisions, "Survey_Height_Revised.xlsx")
 ```
 
+a\)
 
+```{r}
+BMI <- survey_data_revisions$Weight / survey_data_revisions$Heigh^2 * 704
+```
 
-a.  Define a new variable BMI = $\left(\frac{\text{Weight (lb)}}{\text{Height (in)}^2} \right) \times 703$, and classify students into BMI categories based on Centers for Disease Control and Prevention (CDC) guidelines:
+b\)
 
--   BMI \< 18.5 → `"Underweight"`\
--   18.5 ≤ BMI \< 25 → `"Normal"`\
--   25 ≤ BMI \< 30 → `"Overweight"`\
--   BMI ≥ 30 → `"Obese"`
+```{r}
+bmi_category <- cut(
+  BMI,
+  breaks = c(-Inf, 18.5, 25, 30, Inf),
+  labels = c("Underweight", "Normal", "Overweight", "Obese")
+)
 
-b- Visualize and describe the distribution of students' BMI categories using a bar chart.
+bmi_dataframe <- data.frame(Category = bmi_category)
 
-c- Explore the correlations between **BMI**, **GPA**, and **Stress**. Use visualizations and correlation statistics to summarize the relationships.
-:::
+ggplot(bmi_dataframe, aes(x = Category)) +
+  geom_bar(fill = "cyan") +
+  labs(title = "BMI", x = "BMI Category", y = "Count")
+```
 
-`r bfcolor("ANSWERS TO QUESTION 7:", "red")`\
+c\) Explore the correlations between **BMI**, **GPA**, and **Stress**. Use visualizations and correlation statistics to summarize the relationships.
 
-***Replace this line with your answers***\
+```{r}
+
+Stress <- survey_data_revisions$Stress
+GPA <- survey_data_revisions$GPA
+
+ggplot(survey_data_revisions, aes(x = BMI, y = Stress)) +
+  geom_point(color = "cyan") +
+  geom_smooth(method = "lm", se = FALSE, color = "orange") +
+  labs(title = "Correlation between BMI and Stress",
+       x = "BMI",
+       y = "Stress Level")
+
+ggplot(survey_data_revisions, aes(x = BMI, y = GPA)) +
+  geom_point(color = "cyan") +
+  geom_smooth(method = "lm", se = FALSE, color = "orange") +
+  labs(title = "Correlation between BMI and GPA",
+       x = "BMI",
+       y = "GPA")
+```
