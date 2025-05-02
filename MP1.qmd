@@ -35,7 +35,7 @@ bfcolor <- function(x, color) {
 
 -   Kai Barker (kaibarker)
 -   Luke Drushell (drushell)
--   STUDENT 3 (NetID 3)
+-   Rafael Romero (romeroflores)
 :::
 
 ::: callout-tip
@@ -66,6 +66,7 @@ bfcolor <- function(x, color) {
 library(readxl)
 library(ggplot2)
 library(dplyr)
+library(writexl)
 ```
 
 \newpage
@@ -166,9 +167,20 @@ ii -Discuss the potential impact of these outliers on the analysis if left unadd
 
 `r bfcolor("ANSWERS TO QUESTION 4:", "red")`\
 
+**Detect Outliers:** With a boxplot we can locate outliers by analyzing the whiskers of the plot and noticing the points that lie outside of them. 
 ```{r}
-
+boxplot(survey_data$Weight, main="Boxplot of Weight", col ="blue",ylab= "Weight (lb)")
 ```
+We notice two outliers that fall outside the whiskers. Above the 230 mark with `visual inspection`.
+
+**Handling Strategy:** We can simply remove the outliers over the weight of 230 since they are extreme and do not accurately represent the population. 
+```{r}
+upper_limit<- 230
+survey_data_no_outliers <- survey_data[survey_data$Weight < upper_limit, ]
+boxplot(survey_data_no_outliers$Weight,main="Boxplot of Weight w/ No Outliers", col ="pink",ylab= "Weight (lb)")
+```
+**Consequences of Outliers:** Outliers can have a great impact on the results of our analysis as they can `affect our mean, variance, and standard deviation` by providing an inaccurate measure due to an inflation or deflation of our statistics. Also, they can cause our results to be `biased` or lead to `inaccurate p-values` if they violate statistical test assumptions such as normality. 
+
 
 \
 
@@ -188,7 +200,31 @@ c- Use a boxplot to compare stress distributions across sleep categories and com
 
 `r bfcolor("ANSWERS TO QUESTION 5:", "red")`\
 
-***Replace this line with your answers***\
+To investigate the relationship between sleep duration and perceived stress levels, with must first calculate **the average stress for each sleep duration category**.
+```{r}
+
+survey_data %>% select(Sleep, Stress) %>%
+  group_by(Sleep) %>%
+  summarise("Average Stress Level by Group" = mean(Stress))
+```
+
+**Comments:** We notice that on average, those who sleep less than 4 hours have the highest stress level of 10. We can also notice that those who sleep more than 8 hours have the lowest average stress level. 
+
+We can also look at a **boxplot** to visualize how the stress level changes based on sleep.
+```{r}
+
+
+survey_data %>% ggplot(aes(y=Stress,x=Sleep,fill=Sleep)) +
+  geom_boxplot() +
+    labs(title = "Stress Distribution Across Sleep Categories", 
+       x = "Sleep Duration", 
+       y = "Perceived Stress Level") +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for readability
+
+```
+**Conclusion:** We can confidently state that there is a significant correlation between an increase in sleep duration and and decrease in perceived stress levels. 4-6 hours of sleep and less than 4 hours of sleep have the highest amount of perceived stress levels, which supports this claim. It is important to note, though, that 6-8 hours of sleep and more than 8  hours of sleep have notably long whiskers, which indicates that although they are getting good sleep, some may still be experiencing high stress levels. Regardless, their average stress level is still significantly lower than these stress levels, which again supports the correlation between high sleep duration and lower stress levels.
+
 
 \newpage
 
@@ -199,6 +235,8 @@ Create a visualization to show the distribution of Weight, comment!
 :::
 
 ```{r}
+survey_data_revisions <- read_excel("Survey.xlsx")
+
 ggplot(survey_data_revisions, aes(x = Weight)) +
   geom_histogram(binwidth = 5, fill = "cyan", color = "orange") +
   labs(title = "Distribution of Weight",
@@ -228,10 +266,7 @@ c- Explore the correlations between **BMI**, **GPA**, and **Stress**. Use visual
 Starting by standardizing the height to inches:
 
 ```{r}
-library(writexl)
 
-
-survey_data_revisions <- read_excel("Survey.xlsx")
 
 # Adjust the height column
 survey_data_revisions$Heigh <- sapply(survey_data_revisions$Heigh, function(h) {
