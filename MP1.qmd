@@ -67,6 +67,7 @@ library(readxl)
 library(ggplot2)
 library(dplyr)
 library(writexl)
+library(tidyverse)
 ```
 
 \newpage
@@ -101,6 +102,7 @@ Load the data into `R`, obtain basic descriptive statistics for the numerical va
 
 ```{r}
 survey_data <- read_excel("Survey.xlsx")
+survey_data
 
 #rename height since its spelled wrong
 survey_data$Height <- survey_data$Heigh
@@ -110,14 +112,13 @@ head(survey_data)
 summary(survey_data$Weight)
 summary(survey_data$Height)
 summary(survey_data$GPA)
-#talk about these
 ```
 
 We can see from the dataset that there is only three numerical variables. While many of the variables include numerical values, and value that can be categorized, such as the number of meals per day, does not count as a numerical variable. Further, students stress level was determined to not be a numerical variable as it was not continuous, and was limited to only ten options. Thus our numerical variables were Weight, Height, and GPA.
 
 We can observe that the Weight variable had a minimum value of 106 and a maximum value of 309, with a mean value of 159. A challenge with this data is that not all responses may be in the same units, or honest. With that in mind, our mean could be more affected by the maximum and minimum values.
 
-For the height variable...
+The height variable is a little bit more difficult to interpret, as the there were inconsistencies with the collection of the data. Some respondents input their height in centimeters, some in inches and others in a combination of feet' inches" or feet.inches. This lead to the data being difficult to interpret. We can see that the minimum height is 5, while the maximum height is 511, with a mean height of 57.827. Realistically, someone is not 5 inches tall, nor 511 inches tall. We can assume that the 511 is five foot eleven, while the minimum is five foot even. 
 
 From the summary of students GPA, we can observe that there was a minimum GPA of 1.3, and a maximum GPA of 4.0, with a mean of 3.478 and 3 missing values. The missing values are likely due to students who did not want to report their GPA. Further, some students may not have been honest in their responses, skewing the data. However, the mean GPA value seems plausible in a real world context.
 
@@ -142,16 +143,21 @@ d- Can you address any potential bias for this missing values?
 From the dataset, we can see that there are some missing values in the Alcohol, GPA, Health columns.
 
 **b)**
+The missing data could be attributed to multiple factors. For the alcohol variable, some students may not have wanted to answer, as alcohol consumption can be a personal subject. They might also feel uncomfortable answering such a question on a school related survey. For the GPA variable, some students may not want to disclose their GPA because they think it is too low, and there is social pressure to be within a certain GPA range. Similarly, the health variable, related to how many days per week a student exercises may be too personal for someone to feel comfortable disclosing to their peers. Thus, while there many reasons for why these data are missing, it is most likely due to students digression. That would make these data MNAR, or missing not at random, as the missingness is related to the sensitive nature of the variable itself.
 
 **c)**
 
-To handle the missing values in the dataset, we can
+To handle the missing values in the dataset, we can use drop_na to get rid of these rows that are missing data. While there are multiple methods to deal with the missing data, we have discussed in question one, our interest in the data correlating to some of these variables, thus we should drop rows that are missing these data.
+```{r}
+SurveyMissing <- survey_data %>%
+  drop_na(Alcohol, GPA, Health)
+
+head(SurveyMissing)
+```
+
 
 **d)**
-
-```{r}
-
-```
+The bias for the missingness is likely due to the sensitive nature of the responses to those variables. See part **b)** of this question for further explanation.
 
 \newpage
 
@@ -167,20 +173,23 @@ ii -Discuss the potential impact of these outliers on the analysis if left unadd
 
 `r bfcolor("ANSWERS TO QUESTION 4:", "red")`\
 
-**Detect Outliers:** With a boxplot we can locate outliers by analyzing the whiskers of the plot and noticing the points that lie outside of them. 
+**Detect Outliers:** With a boxplot we can locate outliers by analyzing the whiskers of the plot and noticing the points that lie outside of them.
+
 ```{r}
 boxplot(survey_data$Weight, main="Boxplot of Weight", col ="blue",ylab= "Weight (lb)")
 ```
+
 We notice two outliers that fall outside the whiskers. Above the 230 mark with `visual inspection`.
 
-**Handling Strategy:** We can simply remove the outliers over the weight of 230 since they are extreme and do not accurately represent the population. 
+**Handling Strategy:** We can simply remove the outliers over the weight of 230 since they are extreme and do not accurately represent the population.
+
 ```{r}
 upper_limit<- 230
 survey_data_no_outliers <- survey_data[survey_data$Weight < upper_limit, ]
 boxplot(survey_data_no_outliers$Weight,main="Boxplot of Weight w/ No Outliers", col ="pink",ylab= "Weight (lb)")
 ```
-**Consequences of Outliers:** Outliers can have a great impact on the results of our analysis as they can `affect our mean, variance, and standard deviation` by providing an inaccurate measure due to an inflation or deflation of our statistics. Also, they can cause our results to be `biased` or lead to `inaccurate p-values` if they violate statistical test assumptions such as normality. 
 
+**Consequences of Outliers:** Outliers can have a great impact on the results of our analysis as they can `affect our mean, variance, and standard deviation` by providing an inaccurate measure due to an inflation or deflation of our statistics. Also, they can cause our results to be `biased` or lead to `inaccurate p-values` if they violate statistical test assumptions such as normality.
 
 \
 
@@ -201,6 +210,7 @@ c- Use a boxplot to compare stress distributions across sleep categories and com
 `r bfcolor("ANSWERS TO QUESTION 5:", "red")`\
 
 To investigate the relationship between sleep duration and perceived stress levels, with must first calculate **the average stress for each sleep duration category**.
+
 ```{r}
 
 survey_data %>% select(Sleep, Stress) %>%
@@ -208,9 +218,10 @@ survey_data %>% select(Sleep, Stress) %>%
   summarise("Average Stress Level by Group" = mean(Stress))
 ```
 
-**Comments:** We notice that on average, those who sleep less than 4 hours have the highest stress level of 10. We can also notice that those who sleep more than 8 hours have the lowest average stress level. 
+**Comments:** We notice that on average, those who sleep less than 4 hours have the highest stress level of 10. We can also notice that those who sleep more than 8 hours have the lowest average stress level.
 
 We can also look at a **boxplot** to visualize how the stress level changes based on sleep.
+
 ```{r}
 
 
@@ -223,8 +234,8 @@ survey_data %>% ggplot(aes(y=Stress,x=Sleep,fill=Sleep)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for readability
 
 ```
-**Conclusion:** We can confidently state that there is a significant correlation between an increase in sleep duration and and decrease in perceived stress levels. 4-6 hours of sleep and less than 4 hours of sleep have the highest amount of perceived stress levels, which supports this claim. It is important to note, though, that 6-8 hours of sleep and more than 8  hours of sleep have notably long whiskers, which indicates that although they are getting good sleep, some may still be experiencing high stress levels. Regardless, their average stress level is still significantly lower than these stress levels, which again supports the correlation between high sleep duration and lower stress levels.
 
+**Conclusion:** We can confidently state that there is a significant correlation between an increase in sleep duration and and decrease in perceived stress levels. 4-6 hours of sleep and less than 4 hours of sleep have the highest amount of perceived stress levels, which supports this claim. It is important to note, though, that 6-8 hours of sleep and more than 8 hours of sleep have notably long whiskers, which indicates that although they are getting good sleep, some may still be experiencing high stress levels. Regardless, their average stress level is still significantly lower than these stress levels, which again supports the correlation between high sleep duration and lower stress levels.
 
 \newpage
 
@@ -244,7 +255,7 @@ ggplot(survey_data_revisions, aes(x = Weight)) +
        y = "Frequency")
 ```
 
-While there is evidently one outlier, what is much more interesting is the dip found around 150, it seems a lot of people hang just below and just above that range, but very infrequently actually in that area. \
+While there is evidently one outlier, what is much more interesting is the dip found around 150, it seems a lot of people hang just below and just above that range, but very infrequently actually in that area.\
 
 \newpage
 
