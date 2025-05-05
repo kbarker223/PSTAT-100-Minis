@@ -120,7 +120,7 @@ We can observe that the Weight variable had a minimum value of 106 and a maximum
 
 The height variable is a little bit more difficult to interpret, as the there were inconsistencies with the collection of the data. Some respondents input their height in centimeters, some in inches and others in a combination of feet' inches" or feet.inches. This lead to the data being difficult to interpret. We can see that the minimum height is 5, while the maximum height is 511, with a mean height of 57.827. Realistically, someone is not 5 inches tall, nor 511 inches tall. We can assume that the 511 is five foot eleven, while the minimum is five foot even. 
 
-From the summary of students GPA, we can observe that there was a minimum GPA of 1.3, and a maximum GPA of 4.0, with a mean of 3.478 and 3 missing values. The missing values are likely due to students who did not want to report their GPA. Further, some students may not have been honest in their responses, skewing the data. However, the mean GPA value seems plausible in a real world context.
+From the summary of students GPA, we can observe that there was a minimum GPA of 1.3, and a maximum GPA of 4.0, with a mean of 3.478 and 3 missing values. The missing values are likely due to students who did not want to report their GPA. However, the mean GPA value seems plausible in a real world context. The maximum GPA also makes sense as students at UCSB can only achieve a maximum GPA of 4.00. While the minimum GPA does seem slightly low for an upper division student, it is hard to determine without further context.
 
 \newpage
 
