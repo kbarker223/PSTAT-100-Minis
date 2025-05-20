@@ -13,21 +13,20 @@ library(shiny)
 ui <- fluidPage(
 
     # Application title
-    titlePanel("Old Faithful Geyser Data"),
+    titlePanel("Interactive Data Explorer"),
 
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
+            selectInput("variable", "Select Variable:",
+                        choices=names(xxx)), ##update for our dataset
+            selectInput("plotType", "Select Plot Type:",
+                        choices = c("Scatter Plot", "Histogram", "Box Plot"))
         ),
-
         # Show a plot of the generated distribution
         mainPanel(
-           plotOutput("distPlot")
+           plotOutput("plot"),
+           verbatimTextOutput("summary")
         )
     )
 )
@@ -35,15 +34,26 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
 
-    output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white',
-             xlab = 'Waiting time to next eruption (in mins)',
-             main = 'Histogram of waiting times')
+    output$plot <- renderPlot({
+      selected_data <- xxx ## change this for our dataset
+      
+      if (input$plotType == "Scatter Plot") {
+        plot(selected_data[[input$variable]], selected_data[[1]],
+             xlab=input$variable, ylab=names(xxx)[1],
+             main=paste("Scatter Plot of", input$variable))
+      } else if (input$plotType == "Histogram") {
+        hist(selected_data[[input$variable]],
+             xlab=input$variable, main=paste("Histogram of", input$variable),
+             col="lightblue")
+      } else if (input$plotType == "Box Plot") {
+        boxplot(selected_data[[input$variable]] ~ selected_data[[1]],
+                xlab="Group", ylab=input$variable,
+                main=paste("Box Plot of", input$variable))
+      }
+    })
+    
+    output$summary <- renderPrint({
+      summary(xxx[[input$variable]]) ## change for our dataset
     })
 }
 
