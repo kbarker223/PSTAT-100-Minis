@@ -8,6 +8,13 @@
 #
 
 library(shiny)
+library(readr)
+library(dplyr)
+diamonds_data <- read.csv("diamonds.csv", stringsAsFactors=TRUE)
+diamonds_data <- diamonds_data[, -c(1)]
+
+# we will take a sample of 5000 for runtimes sake
+diamonds <- sample_n(diamonds_data, size=5000, replace=FALSE)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -19,7 +26,7 @@ ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
             selectInput("variable", "Select Variable:",
-                        choices=names(xxx)), ##update for our dataset
+                        choices=names(diamonds)),
             selectInput("plotType", "Select Plot Type:",
                         choices = c("Scatter Plot", "Histogram", "Box Plot"))
         ),
@@ -35,11 +42,11 @@ ui <- fluidPage(
 server <- function(input, output) {
 
     output$plot <- renderPlot({
-      selected_data <- xxx ## change this for our dataset
+      selected_data <- diamonds
       
       if (input$plotType == "Scatter Plot") {
         plot(selected_data[[input$variable]], selected_data[[1]],
-             xlab=input$variable, ylab=names(xxx)[1],
+             xlab=input$variable, ylab=names(diamonds)[1],
              main=paste("Scatter Plot of", input$variable))
       } else if (input$plotType == "Histogram") {
         hist(selected_data[[input$variable]],
@@ -53,7 +60,7 @@ server <- function(input, output) {
     })
     
     output$summary <- renderPrint({
-      summary(xxx[[input$variable]]) ## change for our dataset
+      summary(diamonds[[input$variable]]) 
     })
 }
 
