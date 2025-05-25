@@ -33,7 +33,7 @@ bfcolor <- function(x, color) {
 <span style="color: blue;"> **STUDENT NAME **</span> 
 </div>
 - Kai Barker    (kaibarker)
-- STUDENT 2    (NetID 2)
+- Luke Drushell    (drushell)
 
 :::
 

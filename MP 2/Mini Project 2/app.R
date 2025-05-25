@@ -26,9 +26,12 @@ ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
             selectInput("variable", "Select Variable:",
-                        choices=names(diamonds)),
+                        choices = setNames(
+                          names(diamonds), 
+                          paste0(tools::toTitleCase(names(diamonds)), " (", sapply(diamonds, function(x) class(x)[1]), ")")
+                        )),
             selectInput("plotType", "Select Plot Type:",
-                        choices = c("Scatter Plot", "Histogram", "Box Plot"))
+                        choices = c("Scatter Plot", "Histogram (Requires Numeric Data)", "Box Plot"))
         ),
         # Show a plot of the generated distribution
         mainPanel(
@@ -47,15 +50,15 @@ server <- function(input, output) {
       if (input$plotType == "Scatter Plot") {
         plot(selected_data[[input$variable]], selected_data[[1]],
              xlab=input$variable, ylab=names(diamonds)[1],
-             main=paste("Scatter Plot of", input$variable))
-      } else if (input$plotType == "Histogram") {
+             main=paste("Scatter Plot of", tools::toTitleCase(input$variable)))
+      } else if (input$plotType == "Histogram (Requires Numeric Data)") {
         hist(selected_data[[input$variable]],
-             xlab=input$variable, main=paste("Histogram of", input$variable),
+             xlab=input$variable, main=paste("Histogram of", tools::toTitleCase(input$variable)),
              col="lightblue")
       } else if (input$plotType == "Box Plot") {
         boxplot(selected_data[[input$variable]] ~ selected_data[[1]],
                 xlab="Group", ylab=input$variable,
-                main=paste("Box Plot of", input$variable))
+                main=paste("Box Plot of", tools::toTitleCase(input$variable)))
       }
     })
     
