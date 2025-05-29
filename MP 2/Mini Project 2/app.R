@@ -26,27 +26,47 @@ summary(diamonds)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-
-    # Application title
-    titlePanel("Interactive Data Explorer"),
-
-    # Sidebar with a slider input for number of bins 
-    sidebarLayout(
-        sidebarPanel(
-            selectInput("variable", "Select Variable:",
-                        choices = setNames(
-                          names(diamonds), 
-                          paste0(tools::toTitleCase(names(diamonds)), " (", sapply(diamonds, function(x) class(x)[1]), ")")
-                        )),
-            selectInput("plotType", "Select Plot Type:",
-                        choices = c("Scatter Plot", "Histogram (Requires Numeric Data)", "Box Plot"))
-        ),
-        # Show a plot of the generated distribution
-        mainPanel(
-           plotOutput("plot"),
-           verbatimTextOutput("summary")
-        )
+  
+  # Application title
+  titlePanel("Interactive Data Explorer"),
+  
+  # Sidebar with a slider input for number of bins 
+  sidebarLayout(
+    sidebarPanel(
+      selectInput("variable", "Select Variable:",
+                  choices = setNames(
+                    names(diamonds), 
+                    paste0(tools::toTitleCase(names(diamonds)), " (", sapply(diamonds, function(x) class(x)[1]), ")")
+                  )),
+      selectInput("plotType", "Select Plot Type:",
+                  choices = c("Scatter Plot", "Histogram (Requires Numeric Data)", "Box Plot"))
+    ),
+    
+    # Show a plot of the generated distribution
+    mainPanel(
+      plotOutput("plot"),
+      verbatimTextOutput("summary")
     )
+  ),
+  
+  hr(),
+  
+  h3("Add New Diamond"),
+  fluidRow(
+    column(2, numericInput("carat", "Carat", value = 0.23, step = 0.01)),
+    column(2, selectInput("cut", "Cut", choices = c("Ideal", "Premium", "Good", "Very Good", "Fair"))),
+    column(2, selectInput("color", "Color", choices = c("E", "I", "J", "H", "G", "F", "D"))),
+    column(2, selectInput("clarity", "Clarity", choices = c("SI2", "SI1", "VS1", "VS2", "VVS1", "VVS2", "I1"))),
+    column(2, numericInput("depth", "Depth", value = 61.5, step = 0.1))
+  ),
+  fluidRow(
+    column(2, numericInput("table", "Table", value = 55, step = 0.1)),
+    column(2, numericInput("price", "Price", value = 326, step = 1)),
+    column(2, numericInput("x", "X", value = 3.95, step = 0.01)),
+    column(2, numericInput("y", "Y", value = 3.98, step = 0.01)),
+    column(2, numericInput("z", "Z", value = 2.43, step = 0.01)),
+  )
+  
 )
 
 # Define server logic required to draw a histogram

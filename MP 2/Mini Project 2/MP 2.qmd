@@ -69,7 +69,11 @@ A short project report (PDF).
 
 ## App Purpose
 
+<<<<<<< HEAD
 ------------------------------------------------------------------------
+=======
+Allows you to compare your own diamond with the familiar diamonds data set by filling in your diamond's parameters. Plots it against the others in a variety of visuals and estimates values of market price.
+>>>>>>> cc0d81f7717292b91c6d7d9ed546dd902fb17b69
 
 ## How it Works
 
