@@ -79,7 +79,7 @@ ui <- fluidPage(
     column(2, numericInput("length_mm", "Length (mm)", value = 3.95, step = 0.01)),
     column(2, numericInput("width_mm", "Width (mm)", value = 3.98, step = 0.01)),
     column(2, numericInput("depth_mm", "Depth (mm)", value = 2.43, step = 0.01)),
-    column(2, actionButton("add_diamond", "Add Diamond", class = "btn-primary"))
+    column(2, actionButton("add_diamond", "Add Diamond", class = "btn-danger"))
   ),
   
 )
@@ -91,6 +91,10 @@ server <- function(input, output, session) {
   
   # Add a new diamond when the button is pressed
   observeEvent(input$add_diamond, {
+    
+    #removes any old custom ones, so you can easily update your custom diamond
+    rv$data <- rv$data[!rv$data$isCustom, ]
+    
     new_df <- tibble(
         carat      = input$carat,
         cut        = factor(input$cut,   levels = levels(rv$data$cut)),
@@ -125,9 +129,13 @@ server <- function(input, output, session) {
     selected_data <- rv$data
       
       if (input$plotType == "Scatter Plot") {
-        plot(selected_data[[input$variable]], selected_data[[1]],
-             xlab=input$variable, ylab=names(diamonds)[1],
-             main=paste("Scatter Plot of", tools::toTitleCase(input$variable)))
+        plot(selected_data[[input$variable]], ifelse(selected_data[[input$variable]] == selected_data[[1]], selected_data[[4]], selected_data[[1]]),
+             xlab= input$variable, 
+             ylab=names(diamonds)[ifelse(input$variable == "carat", 4, 1)],
+             main=paste("Scatter Plot of", tools::toTitleCase(input$variable)), 
+             
+             #custom diamonds should look different
+             col =ifelse(selected_data$isCustom, "red", "black"))
       } else if (input$plotType == "Histogram (Requires Numeric Data)") {
         hist(selected_data[[input$variable]],
              xlab=input$variable, main=paste("Histogram of", tools::toTitleCase(input$variable)),
