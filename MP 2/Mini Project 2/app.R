@@ -24,7 +24,7 @@ summary(diamonds)
 
 
 
-# Define UI for application that draws a histogram
+# Define UI
 ui <- fluidPage(
   
   # Application title
