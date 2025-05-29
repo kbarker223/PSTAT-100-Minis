@@ -10,13 +10,21 @@
 library(shiny)
 library(readr)
 library(dplyr)
+
+## set a seed for sampling sake
+set.seed(05282025)
 diamonds_data <- read.csv("diamonds.csv", stringsAsFactors=TRUE)
 diamonds_data <- diamonds_data[, -c(1)]
 
 # we will take a sample of 5000 for runtimes sake
 diamonds <- sample_n(diamonds_data, size=5000, replace=FALSE)
 
-# Define UI for application that draws a histogram
+##explore the data 
+summary(diamonds)
+
+
+
+# Define UI
 ui <- fluidPage(
   
   # Application title
