@@ -76,9 +76,14 @@ server <- function(input, output) {
              xlab=input$variable, main=paste("Histogram of", tools::toTitleCase(input$variable)),
              col="lightblue")
       } else if (input$plotType == "Box Plot") {
-        boxplot(selected_data[[input$variable]] ~ selected_data[[1]],
-                xlab="Group", ylab=input$variable,
-                main=paste("Box Plot of", tools::toTitleCase(input$variable)))
+        segments <- if (is.numeric(selected_data[[1]]) && length(unique(selected_data[[1]])) > 10) {
+          cut(selected_data[[1]], breaks = 5, include.lowest = TRUE)
+        } else {
+          as.factor(selected_data[[1]])
+        }
+        boxplot(selected_data[[input$variable]] ~ segments,
+                xlab = "Group", ylab = input$variable,
+                main = paste("Box Plot of", tools::toTitleCase(input$variable)))
       }
     })
     
