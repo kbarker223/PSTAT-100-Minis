@@ -22,6 +22,19 @@ diamonds <- sample_n(diamonds_data, size=5000, replace=FALSE)
 ##explore the data 
 summary(diamonds)
 
+##add an is custom column for our custom diamonds (see below), also rename x y z
+diamonds <- diamonds %>%
+  rename("length_mm" = "x",
+         "width_mm"  = "y",
+         "depth_mm"  = "z",
+         "depth_pct"   = "depth") %>%
+  mutate(isCustom = FALSE)
+
+##estimate price for custom diamonds
+price_model <- lm(log(price) ~ log(carat) + cut + color + clarity + depth_pct + table + length_mm + width_mm + depth_mm, data=diamonds)
+
+
+
 
 
 # Define UI
@@ -42,6 +55,7 @@ ui <- fluidPage(
                   choices = c("Scatter Plot", "Histogram (Requires Numeric Data)", "Box Plot"))
     ),
     
+    
     # Show a plot of the generated distribution
     mainPanel(
       plotOutput("plot"),
@@ -57,23 +71,58 @@ ui <- fluidPage(
     column(2, selectInput("cut", "Cut", choices = c("Ideal", "Premium", "Good", "Very Good", "Fair"))),
     column(2, selectInput("color", "Color", choices = c("E", "I", "J", "H", "G", "F", "D"))),
     column(2, selectInput("clarity", "Clarity", choices = c("SI2", "SI1", "VS1", "VS2", "VVS1", "VVS2", "I1"))),
-    column(2, numericInput("depth", "Depth", value = 61.5, step = 0.1))
+    column(2, numericInput("depth_pct", "Depth (%)", value = 61.5, step = 0.1))
   ),
   fluidRow(
     column(2, numericInput("table", "Table", value = 55, step = 0.1)),
     column(2, numericInput("price", "Price", value = 326, step = 1)),
-    column(2, numericInput("x", "X", value = 3.95, step = 0.01)),
-    column(2, numericInput("y", "Y", value = 3.98, step = 0.01)),
-    column(2, numericInput("z", "Z", value = 2.43, step = 0.01)),
-  )
+    column(2, numericInput("length_mm", "Length (mm)", value = 3.95, step = 0.01)),
+    column(2, numericInput("width_mm", "Width (mm)", value = 3.98, step = 0.01)),
+    column(2, numericInput("depth_mm", "Depth (mm)", value = 2.43, step = 0.01)),
+    column(2, actionButton("add_diamond", "Add Diamond", class = "btn-primary"))
+  ),
   
 )
 
 # Define server logic required to draw a histogram
-server <- function(input, output) {
-
-    output$plot <- renderPlot({
-      selected_data <- diamonds
+server <- function(input, output, session) {
+  
+  rv <- reactiveValues(data = diamonds)
+  
+  # Add a new diamond when the button is pressed
+  observeEvent(input$add_diamond, {
+    new_df <- tibble(
+        carat      = input$carat,
+        cut        = factor(input$cut,   levels = levels(rv$data$cut)),
+        color      = factor(input$color, levels = levels(rv$data$color)),
+        clarity    = factor(input$clarity, levels = levels(rv$data$clarity)),
+        depth_pct = input$depth_pct,
+        table      = input$table,
+        length_mm = input$length_mm,
+        width_mm  = input$width_mm,
+        depth_mm  = input$depth_mm,
+        isCustom   = TRUE
+      )
+    
+    new_row <- tibble(
+      carat      = input$carat,
+      cut        = factor(input$cut,   levels = levels(rv$data$cut)),
+      color      = factor(input$color, levels = levels(rv$data$color)),
+      clarity    = factor(input$clarity, levels = levels(rv$data$clarity)),
+      depth_pct = input$depth_pct,
+      table      = input$table,
+      price      = exp(predict(price_model, new_df)),
+      length_mm = input$length_mm,
+      width_mm  = input$width_mm,
+      depth_mm  = input$depth_mm,
+      isCustom   = TRUE
+    )
+    
+    rv$data <- bind_rows(rv$data, new_row)
+  })
+  
+  output$plot <- renderPlot({
+    selected_data <- rv$data
       
       if (input$plotType == "Scatter Plot") {
         plot(selected_data[[input$variable]], selected_data[[1]],
@@ -96,9 +145,10 @@ server <- function(input, output) {
     })
     
     output$summary <- renderPrint({
-      summary(diamonds[[input$variable]]) 
+      summary(rv$data[[input$variable]])
     })
 }
+
 
 # Run the application 
 shinyApp(ui = ui, server = server)
