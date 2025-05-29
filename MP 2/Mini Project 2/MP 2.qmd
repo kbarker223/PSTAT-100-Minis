@@ -70,7 +70,7 @@ A short project report (PDF).
 
 ## App Purpose
 
-----
+Allows you to compare your own diamond with the familiar diamonds data set by filling in your diamond's parameters. Plots it against the others in a variety of visuals and estimates values of market price.
 
 ## How it Works
 
