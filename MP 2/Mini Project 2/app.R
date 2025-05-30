@@ -31,6 +31,7 @@ diamonds <- diamonds %>%
   mutate(isCustom = FALSE)
 
 ##estimate price for custom diamonds
+##determined best model in PSTAT 126 Final project
 price_model <- lm(log(price) ~ log(carat) + cut + color + clarity + depth_pct + table + length_mm + width_mm + depth_mm, data=diamonds)
 
 

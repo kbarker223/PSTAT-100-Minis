@@ -69,16 +69,24 @@ A short project report (PDF).
 
 ## App Purpose
 
+The purpose of our app is to allow users to explore the "Diamonds" dataset. This dataset was sourced from kaggle (https://www.kaggle.com/datasets/shivam2503/diamonds). Our app allows users to choose from the available variables and selected a method of graphing that variable, as well as create their own diamond. Users can see their own diamond graphed amongst the ones present in the dataset, as their custom diamond will appear red on the graph. 
+
 ------------------------------------------------------------------------
 
 ## How it Works
+
+The user interface has three main components. The first component is the variable and graph selecter. In the upper left corner of the application, users can select a variable from the dataset that they would like to visualize. Below the variable selector, in the same box, users can choose visual option for their selected variable. Their options are a scatter plot, histogram, and a box plot. The second component is the graph itself. Displayed on the right hand side of the screen, users will see their selected variable and plot projected, with appropriate axis labeling, a title and a summary of the variable below. The last component is the option for the user to create their own diamond. Users can input/select values for each of the diamonds characteristics in order to create their own diamond. Observe that there is no option for the user to input a price. This is because a diamonds price is relative to its characteristics. The price of the diamond is generated based on the users inputs and a multiple regression model. If a custom diamond is made, it will be added to the data and will appear on the graph displayed, for a scatter plot, the new data will appear red.
 
 ------------------------------------------------------------------------
 
 ## Insights
 
+
+
 ------------------------------------------------------------------------
 
 ## Reflections
+
+color of the new diamond (red) only shows up on scatter plots and wont be apparent on a histogram or a 
 
 ------------------------------------------------------------------------
