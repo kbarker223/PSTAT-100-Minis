@@ -30,11 +30,13 @@ diamonds <- diamonds %>%
          "depth_pct"   = "depth") %>%
   mutate(isCustom = FALSE)
 
+#we dont want to display isCustom as a variable option
+variable_names <- names(diamonds)
+variable_names <- variable_names[variable_names != "isCustom"]
+
 ##estimate price for custom diamonds
 ##determined best model in PSTAT 126 Final project
 price_model <- lm(log(price) ~ log(carat) + cut + color + clarity + depth_pct + table + length_mm + width_mm + depth_mm, data=diamonds)
-
-
 
 
 
@@ -49,8 +51,9 @@ ui <- fluidPage(
     sidebarPanel(
       selectInput("variable", "Select Variable:",
                   choices = setNames(
-                    names(diamonds), 
-                    paste0(tools::toTitleCase(names(diamonds)), " (", sapply(diamonds, function(x) class(x)[1]), ")")
+                    # we dont need the isCustom variable to be visualized
+                    variable_names, 
+                    paste0(tools::toTitleCase(variable_names), " (", sapply(diamonds[variable_names], function(x) class(x)[1]), ")")
                   )),
       selectInput("plotType", "Select Plot Type:",
                   choices = c("Scatter Plot", "Histogram (Requires Numeric Data)", "Box Plot"))
@@ -93,7 +96,7 @@ server <- function(input, output, session) {
   # Add a new diamond when the button is pressed
   observeEvent(input$add_diamond, {
     
-    #removes any old custom ones, so you can easily update your custom diamond
+    #store inputs in new_df so we can use to estimate price
     rv$data <- rv$data[!rv$data$isCustom, ]
     
     new_df <- tibble(
@@ -109,6 +112,7 @@ server <- function(input, output, session) {
         isCustom   = TRUE
       )
     
+    # add the data with the estimated price to the dataset (we use exp since its log price in the model)
     new_row <- tibble(
       carat      = input$carat,
       cut        = factor(input$cut,   levels = levels(rv$data$cut)),
@@ -132,7 +136,7 @@ server <- function(input, output, session) {
       if (input$plotType == "Scatter Plot") {
         plot(selected_data[[input$variable]], ifelse(selected_data[[input$variable]] == selected_data[[1]], selected_data[[4]], selected_data[[1]]),
              xlab= input$variable, 
-             ylab=names(diamonds)[ifelse(input$variable == "carat", 4, 1)],
+             ylab=variable_names[ifelse(input$variable == "carat", 4, 1)],
              main=paste("Scatter Plot of", tools::toTitleCase(input$variable)), 
              
              #custom diamonds should look different
